@@ -1,4 +1,4 @@
-# PZ-1_JavaApplications_2026_Svyrydenko_Eva_TSK-31
+
 **<h3>ПЗ-1 Мельник Владислав ЦК-31<h3>**
 ___
 **Роздiл 1**
