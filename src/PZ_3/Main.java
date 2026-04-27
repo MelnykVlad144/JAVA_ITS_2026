@@ -36,7 +36,7 @@ class Department {
     public Department(String name, Employee head, List<Employee> employees) {
         this.name = name;
         this.head = head;
-        this.employees = new ArrayList<>(employees); // Використання Collection Framework
+        this.employees = new ArrayList<>(employees);
     }
 
     public String getName() { return name; }
@@ -61,27 +61,30 @@ class Company {
         this.departments = new ArrayList<>(departments);
     }
 
+    // Геттери для доступу до приватної інформації (додано для виводу)
+    public String getName() { return name; }
+    public Employee getDirector() { return director; }
+
     // Задача 3: Скласти список усіх співробітників фірми (включаючи начальників та директора)
     public List<Employee> getAllEmployees() {
         return Stream.concat(
-                Stream.of(director), // Додаємо директора
+                Stream.of(director),
                 departments.stream().flatMap(dept -> Stream.concat(
-                        Stream.of(dept.getHead()), // Додаємо начальника відділу
-                        dept.getEmployees().stream() // Додаємо звичайних працівників відділу
+                        Stream.of(dept.getHead()),
+                        dept.getEmployees().stream()
                 ))
         ).collect(Collectors.toList());
     }
 
-    // Задача 1: Знайти значення максимальної заробітної платні з усіх працівників
+    // Задача 1: Знайти значення максимальної заробітної платні
     public double getMaxSalary() {
         return getAllEmployees().stream()
                 .mapToDouble(Employee::getSalary)
                 .max()
-                .orElse(0.0); // Поверне 0.0, якщо список порожній
+                .orElse(0.0);
     }
 
     // Задача 2: Визначити відділ, в якому хоча б один співробітник отримує більше за начальника
-    // Повертає список таких відділів (оскільки їх може бути декілька)
     public List<Department> getDepartmentsWhereEmployeeEarnsMoreThanHead() {
         return departments.stream()
                 .filter(dept -> dept.getEmployees().stream()
@@ -90,20 +93,18 @@ class Company {
     }
 }
 
-// Головний клас для перевірки роботи
 public class Main {
     public static void main(String[] args) {
         // Створюємо працівників
-        Employee director = new Employee("Каньє", "Вест", 50000);
+        Employee director = new Employee("Каньє", "Вест", 32000);
 
         Employee headIt = new Employee("Петро", "Щур", 30000);
         Employee itEmp1 = new Employee("Ігор", "Коломойський", 25000);
-        Employee itEmp2 = new Employee("Анна", "Трінчер", 35000); // Отримує більше за начальника!
+        Employee itEmp2 = new Employee("Анна", "Трінчер", 35000);
 
         Employee headHr = new Employee("Маріанна", "Буданова", 20000);
         Employee hrEmp1 = new Employee("Павло", "Зібров", 15000);
 
-        // Формуємо списки працівників для відділів
         List<Employee> itEmployees = new ArrayList<>();
         itEmployees.add(itEmp1);
         itEmployees.add(itEmp2);
@@ -111,18 +112,20 @@ public class Main {
         List<Employee> hrEmployees = new ArrayList<>();
         hrEmployees.add(hrEmp1);
 
-        // Створюємо відділи
         Department itDept = new Department("IT Відділ", headIt, itEmployees);
         Department hrDept = new Department("HR Відділ", headHr, hrEmployees);
 
-        // Формуємо список відділів та створюємо фірму
         List<Department> departments = new ArrayList<>();
         departments.add(itDept);
         departments.add(hrDept);
 
-        Company company = new Company("TechCorp", director, departments);
+        Company company = new Company("52 Group", director, departments);
 
-        System.out.println("--- Результати роботи програми ---");
+        // --- ВИВІД РЕЗУЛЬТАТІВ ---
+        System.out.println("--- ЗАГАЛЬНА ІНФОРМАЦІЯ ПРО ФІРМУ ---");
+        System.out.println("Назва фірми: " + company.getName());
+        System.out.println("Директор: " + company.getDirector().getFirstName() + " " + company.getDirector().getLastName());
+        System.out.println("-------------------------------------");
 
         // Тест задачі 1
         System.out.println("\n1) Максимальна заробітна платня на фірмі:");
@@ -139,4 +142,3 @@ public class Main {
         allEmployees.forEach(System.out::println);
     }
 }
-
